@@ -6,13 +6,12 @@
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 18:02:06 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/05/30 14:19:36 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/04 13:12:33 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-//TODO see if not doing utime * 1000 instead
 size_t	ft_get_mtime(void)
 {
 	struct timeval	tv;

@@ -5,10 +5,12 @@ CTHREADS = -fsanitize=thread -g
 
 NAME = philo
 SRC = main.c \
-		ft_exit.c \
-		ft_parse.c \
+		ft_exit_free.c \
+		ft_parse_arg.c \
 		ft_philo_print.c \
-		ft_time.c
+		ft_time.c \
+		init.c \
+		routine.c
 
 OBJ = ${SRC:.c=.o}
 
@@ -17,10 +19,10 @@ all : $(NAME)
 $(NAME) : $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $(OBJ)
 
-debug_leaks: $(OBJ)
+leaks_debug: $(OBJ)
 	$(CC) $(CFLAGS) $(CLEAKS) -o $@ $(OBJ)
 
-debug_race: $(OBJ)
+race_debug: $(OBJ)
 	$(CC) $(CFLAGS) $(CTHREADS) -o $@ $(OBJ)
 
 %.o : %.c
@@ -30,7 +32,7 @@ clean :
 	$(RM) -f $(OBJ)
 
 fclean : clean
-	$(RM) -f $(NAME) debug_leaks debug_race
+	$(RM) -f $(NAME) leaks_debug race_debug
 
 re : fclean all
 

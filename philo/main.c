@@ -3,24 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clai-ton <clai-ton@student.42.fr>          +#+  +:+       +#+        */
+/*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 19:45:59 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/01/09 17:07:53 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/04 17:59:16 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	main(int argc, char **argv)
+// number_of_philosophers time_to_die time_to_eat time_to_sleep
+// [number_of_times_each_philosopher_must_eat]
+
+int	main (int argc, char **argv)
 {
-	if (argc < 5 || argc > 6)
-	{
-		printf("Wrong usage. Do:\n./philo number_of_philosophers "
-			"time_to_die time_to_eat time_to_sleep "
-			"[optional: number_of_times_each_philosopher_must_eat]\n");
-		return (EXIT_SUCCESS);
-	}
-	
+	t_monitor	*monitor;
+	// int			i;
+
+	monitor = init_project(argc, argv);
+	printf("%i %i %i %i %i\n", monitor->philo_nb, monitor->mtime_to_die,
+		monitor->mtime_to_eat, monitor->mtime_to_sleep, monitor->meal_target_nb);
+	printf("%lu\n", monitor->start_utime);
+	// i = 0;
+	// while (i < monitor->philo_nb)
+	// {
+	// 	pthread_create(&monitor->philos[i].thread, NULL,
+	// 		&philo_routine, &monitor->philos[i]);
+	// 	++i;
+	// }
+	//todo
+	ft_free_data(monitor);
 	return (EXIT_SUCCESS);
 }

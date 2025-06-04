@@ -1,16 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_parse.c                                         :+:      :+:    :+:   */
+/*   ft_parse_arg.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 16:41:18 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/05/30 14:47:10 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/04 17:58:20 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+static int	ft_strncmp(const char *s1, const char *s2, size_t length)
+{
+	size_t	i;
+
+	if (length == 0 || !s1 || !s2)
+		return (0);
+	i = 0;
+	while ((s1[i] || s2[i]) && i < length)
+	{
+		if (s1[i] != s2[i])
+			return ((unsigned char) s1[i] - (unsigned char) s2[i]);
+		i++;
+	}
+	return (0);
+}
 
 static int	validate_len(char *str, int *i)
 {
@@ -43,7 +59,6 @@ int	ft_parse_arg(char *str)
 {
 	int	n;
 	int	i;
-	int	len;
 
 	n = 0;
 	i = 0;

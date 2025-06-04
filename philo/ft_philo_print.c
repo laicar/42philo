@@ -3,18 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   ft_philo_print.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clai-ton <clai-ton@student.42.fr>          +#+  +:+       +#+        */
+/*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 17:47:03 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/01/06 19:39:05 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/04 17:14:47 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	ft_philo_print(unsigned long time, int philo, char *str)
+/*
+Returns B_TRUE if has printed, B_FALSE otherwise.
+Does not print if the simulation is supposed to have stopped.
+*/
+int	philo_print(t_philo *philo, char *action_msg)
 {
-	//lock write mutex
-	printf("%lu %d %s\n", time, philo, str);
-	//unlock write mutex
+	pthread_mutex_lock(&philo->monitor->lock);
+	if (philo->monitor->all_meals_flag || philo->monitor->dead_philo_flag)
+	{
+		pthread_mutex_unlock(&philo->monitor->lock);
+		return (B_FALSE);
+	}
+	printf("%lu %d %s\n", (ft_get_utime() - philo->monitor->start_utime) / 1000,
+		philo->id_nb, action_msg);
+	pthread_mutex_unlock(&philo->monitor->lock);
+	return (B_TRUE);
 }
