@@ -14,13 +14,13 @@
 
 int	should_stop_routine(t_monitor *monitor)
 {
-	pthread_mutex_lock(&monitor->lock);
+	pthread_mutex_lock(&monitor->flags_lock);
 	if (monitor->all_meals_flag || monitor->dead_philo_flag)
 	{
-		pthread_mutex_unlock(&monitor->lock);
+		pthread_mutex_unlock(&monitor->flags_lock);
 		return (B_TRUE);
 	}
-	pthread_mutex_unlock(&monitor->lock);
+	pthread_mutex_unlock(&monitor->flags_lock);
 	return (B_FALSE);
 }
 

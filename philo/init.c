@@ -45,7 +45,7 @@ static int	init_monitor_arg(int argc, char **argv, t_monitor *monitor)
 	if (argc == 6)
 		monitor->meal_target_nb = ft_parse_arg(argv[5]);
 	else
-		monitor->meal_target_nb = -2;
+		monitor->meal_target_nb = DFL_MEALS;
 	if (monitor->meal_target_nb == -1 || monitor->mtime_to_die == -1
 		|| monitor->mtime_to_eat == -1 || monitor->mtime_to_sleep == -1
 		|| monitor->philo_nb == -1 || monitor->philo_nb > P_MAX)
@@ -67,10 +67,11 @@ static t_monitor	*init_monitor(int argc, char **argv)
 	monitor = (t_monitor *) malloc(sizeof(t_monitor));
 	if (!monitor || init_monitor_arg(argc, argv, monitor))
 		return (NULL);
-	monitor->dead_philo_flag = 0;
-	monitor->all_meals_flag = 0;
+	monitor->dead_philo_flag = B_FALSE;
+	monitor->all_meals_flag = B_FALSE;
 	monitor->philo_done_nb = 0;
-	pthread_mutex_init(&monitor->lock, NULL);
+	pthread_mutex_init(&monitor->flags_lock, NULL);
+	pthread_mutex_init(&monitor->write_lock, NULL);
 	monitor->start_utime = ft_get_utime();
 	return (monitor);
 }

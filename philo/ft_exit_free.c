@@ -24,7 +24,8 @@ void	ft_free_data(t_monitor *monitor)
 		pthread_mutex_destroy(&monitor->philos[i].l_fork);
 		++i;
 	}
-	pthread_mutex_destroy(&monitor->lock);
+	pthread_mutex_destroy(&monitor->flags_lock);
+	pthread_mutex_destroy(&monitor->write_lock);
 	free(monitor);
 }
 

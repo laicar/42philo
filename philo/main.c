@@ -20,10 +20,10 @@ int	main (int argc, char **argv)
 	t_monitor	*monitor;
 	// int			i;
 
+	printf("%lu\n", monitor->start_utime);
 	monitor = init_project(argc, argv);
 	printf("%i %i %i %i %i\n", monitor->philo_nb, monitor->mtime_to_die,
 		monitor->mtime_to_eat, monitor->mtime_to_sleep, monitor->meal_target_nb);
-	printf("%lu\n", monitor->start_utime);
 	// i = 0;
 	// while (i < monitor->philo_nb)
 	// {
@@ -32,6 +32,7 @@ int	main (int argc, char **argv)
 	// 	++i;
 	// }
 	//todo
+	printf("%lu\n", monitor->start_utime - ft_get_utime());
 	ft_free_data(monitor);
 	return (EXIT_SUCCESS);
 }

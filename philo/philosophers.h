@@ -45,6 +45,8 @@ enum e_philo_state
 
 // The maximum number of philosophers in a simulation during evaluation
 # define P_MAX 200
+// The default value for no meal number target
+# define DFL_MEALS -42
 
 struct s_monitor;
 
@@ -70,7 +72,8 @@ typedef struct s_monitor
 	int				mtime_to_eat;
 	int				mtime_to_sleep;
 	int				meal_target_nb;
-	pthread_mutex_t	lock;
+	pthread_mutex_t	flags_lock;
+	pthread_mutex_t	write_lock;
 	int				dead_philo_flag;
 	int				all_meals_flag;
 	int				philo_done_nb;
