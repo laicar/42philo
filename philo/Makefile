@@ -10,7 +10,8 @@ SRC = main.c \
 		ft_philo_print.c \
 		ft_time.c \
 		init.c \
-		routine.c
+		monitor_routine.c \
+		philo_routine.c
 
 OBJ = ${SRC:.c=.o}
 

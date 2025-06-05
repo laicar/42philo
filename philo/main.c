@@ -18,21 +18,19 @@
 int	main (int argc, char **argv)
 {
 	t_monitor	*monitor;
-	// int			i;
+	int			i;
 
-	printf("%lu\n", monitor->start_utime);
 	monitor = init_project(argc, argv);
-	printf("%i %i %i %i %i\n", monitor->philo_nb, monitor->mtime_to_die,
-		monitor->mtime_to_eat, monitor->mtime_to_sleep, monitor->meal_target_nb);
-	// i = 0;
-	// while (i < monitor->philo_nb)
-	// {
-	// 	pthread_create(&monitor->philos[i].thread, NULL,
-	// 		&philo_routine, &monitor->philos[i]);
-	// 	++i;
-	// }
-	//todo
-	printf("%lu\n", monitor->start_utime - ft_get_utime());
+	i = 0;
+	if (pthread_create(&monitor->thread, NULL, &monitor_routine, &monitor))
+		ft_exit_free_data(monitor, "Error when creating threads.\n");
+	while (i < monitor->philo_nb)
+	{
+		if (pthread_create(&monitor->philos[i].thread, NULL,
+			&philo_routine, &monitor->philos[i]))
+			ft_exit_free_data(monitor, "Error when creating threads.\n");
+		++i;
+	}
 	ft_free_data(monitor);
 	return (EXIT_SUCCESS);
 }

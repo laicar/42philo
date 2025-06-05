@@ -28,8 +28,14 @@ size_t	ft_get_utime(void)
 	return (tv.tv_sec * 1000000UL + tv.tv_usec);
 }
 
+size_t	mtime_diff(size_t start_utime, size_t end_utime)
+{
+	return ((end_utime - start_utime) / 1000);
+}
+
 /*
-A more precise usleep using gettimeofday().
+A more precise usleep() using gettimeofday(),
+as usleep() only guarantees minimum sleep time.
 Has the inconvenience of using up more CPU.
 */
 void	ft_usleep(size_t useconds)
@@ -50,4 +56,16 @@ void	ft_usleep(size_t useconds)
 		elapsed = current - start;
 		remaining = useconds - elapsed;
 	}
+}
+
+//todo remove printf later
+void	wait_for_start_time(size_t start_utime)
+{
+	size_t	remaining;
+
+	remaining = ft_get_utime() - start_utime;
+	if (remaining > 0)
+		ft_usleep(remaining);
+	else
+		printf("Simulation started early!\n");
 }

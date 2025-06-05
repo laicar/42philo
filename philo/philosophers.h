@@ -33,11 +33,11 @@ enum e_philo_state
 
 // The official output specified
 
-# define P_TAKE_FORK "has taken a fork"
-# define P_THINKING "is thinking"
-# define P_SLEEPING "is sleeping"
-# define P_EATING "is eating"
-# define P_DYING "died"
+# define MSG_TAKE_FORK "has taken a fork"
+# define MSG_THINKING "is thinking"
+# define MSG_SLEEPING "is sleeping"
+# define MSG_EATING "is eating"
+# define MSG_DYING "died"
 
 // Booleans
 # define B_TRUE 1
@@ -72,19 +72,26 @@ typedef struct s_monitor
 	int				mtime_to_eat;
 	int				mtime_to_sleep;
 	int				meal_target_nb;
-	pthread_mutex_t	flags_lock;
-	pthread_mutex_t	write_lock;
 	int				dead_philo_flag;
 	int				all_meals_flag;
 	int				philo_done_nb;
+	pthread_t		thread;
+	pthread_mutex_t	flags_lock;
+	pthread_mutex_t	done_lock;
+	pthread_mutex_t	write_lock;
 } t_monitor;
+
+size_t		ft_get_utime(void);
+size_t		mtime_diff(size_t start_utime, size_t end_utime);
+void		ft_usleep(size_t useconds);
+void		wait_for_start_time(size_t start_utime);
 
 int			ft_parse_arg(char *str);
 t_monitor	*init_project(int argc, char **argv);
-size_t		ft_get_utime(void);
-void		ft_usleep(size_t useconds);
-void		ft_philo_print();
-void		*philo_routine(void *data);
+
+int			philo_print(t_philo *philo, char *action_msg);
+void		*philo_routine(void *void_philo);
+
 void		ft_free_data(t_monitor *monitor);
 void		ft_exit_error(char *message);
 void		ft_exit_free_data(t_monitor *monitor, char *message);

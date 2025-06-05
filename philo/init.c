@@ -48,12 +48,12 @@ static int	init_monitor_arg(int argc, char **argv, t_monitor *monitor)
 		monitor->meal_target_nb = DFL_MEALS;
 	if (monitor->meal_target_nb == -1 || monitor->mtime_to_die == -1
 		|| monitor->mtime_to_eat == -1 || monitor->mtime_to_sleep == -1
-		|| monitor->philo_nb == -1 || monitor->philo_nb > P_MAX)
+		|| monitor->philo_nb <= 0 || monitor->philo_nb > P_MAX)
 	{
 		free(monitor);
 		printf("Argument error."
 			" All arguments must be positive numbers"
-			" and philo max number is %i.\n"
+			" there must be at least 1 philo, and philo max number is %i.\n"
 			, P_MAX);
 		exit(EXIT_FAILURE);
 	}
@@ -71,8 +71,9 @@ static t_monitor	*init_monitor(int argc, char **argv)
 	monitor->all_meals_flag = B_FALSE;
 	monitor->philo_done_nb = 0;
 	pthread_mutex_init(&monitor->flags_lock, NULL);
+	pthread_mutex_init(&monitor->done_lock, NULL);
 	pthread_mutex_init(&monitor->write_lock, NULL);
-	monitor->start_utime = ft_get_utime();
+	monitor->start_utime = ft_get_utime() + (monitor->philo_nb * 20000);
 	return (monitor);
 }
 
