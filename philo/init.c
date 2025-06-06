@@ -6,7 +6,7 @@
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:40:44 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/06/04 17:58:49 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/06 14:51:48 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,12 @@ static void	init_philo(t_monitor *monitor, int nb_philo)
 	while (i < nb_philo)
 	{
 		monitor->philos[i].monitor = monitor;
-		monitor->philos[i].last_meal_start_utime = monitor->start_utime;
+		monitor->philos[i].will_die_utime =
+			monitor->start_utime + monitor->mtime_to_die * 1000;
 		monitor->philos[i].id_nb = i + 1;
 		monitor->philos[i].meals_eaten_nb = 0;
 		pthread_mutex_init(&monitor->philos[i].l_fork, NULL);
-		pthread_mutex_init(&monitor->philos[i].state_lock, NULL);
+		pthread_mutex_init(&monitor->philos[i].death_time_lock, NULL);
 		++i;
 	}
 	monitor->philos[0].r_fork = monitor->philos[nb_philo - 1].l_fork;
@@ -51,8 +52,8 @@ static int	init_monitor_arg(int argc, char **argv, t_monitor *monitor)
 		|| monitor->philo_nb <= 0 || monitor->philo_nb > P_MAX)
 	{
 		free(monitor);
-		printf("Argument error."
-			" All arguments must be positive numbers"
+		printf("Argument error.\n"
+			"All arguments must be positive integers,"
 			" there must be at least 1 philo, and philo max number is %i.\n"
 			, P_MAX);
 		exit(EXIT_FAILURE);
@@ -71,9 +72,9 @@ static t_monitor	*init_monitor(int argc, char **argv)
 	monitor->all_meals_flag = B_FALSE;
 	monitor->philo_done_nb = 0;
 	pthread_mutex_init(&monitor->flags_lock, NULL);
-	pthread_mutex_init(&monitor->done_lock, NULL);
+	pthread_mutex_init(&monitor->philo_done_lock, NULL);
 	pthread_mutex_init(&monitor->write_lock, NULL);
-	monitor->start_utime = ft_get_utime() + (monitor->philo_nb * 20000);
+	monitor->start_utime = ft_get_utime() + (monitor->philo_nb * 30000);
 	return (monitor);
 }
 

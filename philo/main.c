@@ -6,7 +6,7 @@
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 19:45:59 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/06/04 17:59:16 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/06 15:08:38 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,20 @@ int	main (int argc, char **argv)
 	int			i;
 
 	monitor = init_project(argc, argv);
-	i = 0;
-	if (pthread_create(&monitor->thread, NULL, &monitor_routine, &monitor))
+	if (pthread_create(&monitor->thread, NULL, monitor_routine, monitor))
 		ft_exit_free_data(monitor, "Error when creating threads.\n");
+	i = 0;
 	while (i < monitor->philo_nb)
 	{
 		if (pthread_create(&monitor->philos[i].thread, NULL,
-			&philo_routine, &monitor->philos[i]))
+			philo_routine, &monitor->philos[i]))
 			ft_exit_free_data(monitor, "Error when creating threads.\n");
 		++i;
 	}
+	i = 0;
+	while (i < monitor->philo_nb)
+		pthread_join(monitor->philos[i++].thread, NULL);
+	pthread_join(monitor->thread, NULL);
 	ft_free_data(monitor);
 	return (EXIT_SUCCESS);
 }

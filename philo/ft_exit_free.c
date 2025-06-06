@@ -6,7 +6,7 @@
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 16:44:11 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/06/04 17:49:07 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/06 13:17:55 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,13 @@ void	ft_free_data(t_monitor *monitor)
 	i = 0;
 	while (i < monitor->philo_nb)
 	{
-		pthread_mutex_destroy(&monitor->philos[i].state_lock);
+		pthread_mutex_destroy(&monitor->philos[i].death_time_lock);
 		pthread_mutex_destroy(&monitor->philos[i].l_fork);
 		++i;
 	}
 	pthread_mutex_destroy(&monitor->flags_lock);
 	pthread_mutex_destroy(&monitor->write_lock);
+	pthread_mutex_destroy(&monitor->philo_done_lock);
 	free(monitor);
 }
 

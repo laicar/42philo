@@ -6,7 +6,7 @@
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 17:42:17 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/06/04 17:58:03 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/06 13:17:37 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,6 @@
 # include <unistd.h>
 # include <sys/time.h>
 # include <stdio.h>
-
-//TODO see if used
-enum e_philo_state
-{
-	PHILO_EATING,
-	PHILO_SLEEPING,
-	PHILO_THINKING,
-	PHILO_TAKE_FORK_1,
-	PHILO_DEAD,
-	PHILO_FINISHED,
-	PHILO_START
-};
 
 // The official output specified
 
@@ -43,6 +31,9 @@ enum e_philo_state
 # define B_TRUE 1
 # define B_FALSE 0
 
+# define SIM_CONTINUE 1
+# define SIM_STOP 0
+
 // The maximum number of philosophers in a simulation during evaluation
 # define P_MAX 200
 // The default value for no meal number target
@@ -55,12 +46,11 @@ typedef struct s_philosopher
 	struct s_monitor	*monitor;
 	pthread_t			thread;
 	int					id_nb;
-	int					state_enum;
 	int					meals_eaten_nb;
-	size_t				last_meal_start_utime;
+	size_t				will_die_utime;
 	pthread_mutex_t		r_fork;
 	pthread_mutex_t 	l_fork;
-	pthread_mutex_t 	state_lock;
+	pthread_mutex_t 	death_time_lock;
 }	t_philo;
 
 typedef struct s_monitor
@@ -77,7 +67,7 @@ typedef struct s_monitor
 	int				philo_done_nb;
 	pthread_t		thread;
 	pthread_mutex_t	flags_lock;
-	pthread_mutex_t	done_lock;
+	pthread_mutex_t	philo_done_lock;
 	pthread_mutex_t	write_lock;
 } t_monitor;
 
@@ -91,6 +81,11 @@ t_monitor	*init_project(int argc, char **argv);
 
 int			philo_print(t_philo *philo, char *action_msg);
 void		*philo_routine(void *void_philo);
+
+void		*monitor_routine(void *void_monitor);
+int			should_routine_stop(t_monitor *monitor);
+void		found_dead_philo(t_monitor *monitor, t_philo *dead_philo);
+void		update_done_philos(t_monitor *monitor);
 
 void		ft_free_data(t_monitor *monitor);
 void		ft_exit_error(char *message);

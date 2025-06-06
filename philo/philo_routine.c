@@ -1,33 +1,65 @@
-//todo header
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_routine.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/06 13:32:59 by clai-ton          #+#    #+#             */
+/*   Updated: 2025/06/06 15:03:37 by clai-ton         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	should_stop_routine(t_monitor *monitor)
-{
-	pthread_mutex_lock(&monitor->flags_lock);
-	if (monitor->all_meals_flag || monitor->dead_philo_flag)
-	{
-		pthread_mutex_unlock(&monitor->flags_lock);
-		return (B_TRUE);
-	}
-	pthread_mutex_unlock(&monitor->flags_lock);
-	return (B_FALSE);
-}
-
-void	*lone_philo_case(t_philo *philo)
+static void	*lone_philo_case(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->l_fork);
-	ft_philo_print(philo, MSG_TAKE_FORK);
+	philo_print(philo, MSG_TAKE_FORK);
 	ft_usleep(philo->monitor->mtime_to_die);
-	philo_print(philo, MSG_DYING);
-	pthread_mutex_lock(&philo->state_lock);
-	philo->state_enum = PHILO_DEAD;
-	pthread_mutex_unlock(&philo->state_lock);
 	pthread_mutex_unlock(&philo->l_fork);
-	pthread_mutex_lock(&philo->monitor->flags_lock);
-	philo->monitor->flags_lock = B_TRUE;
-	pthread_mutex_unlock(&philo->monitor->flags_lock);
+	found_dead_philo(philo->monitor, philo);
+	should_routine_stop(philo->monitor);
 	return (NULL);
+}
+
+static int	philo_sleep_think(t_philo *philo)
+{
+printf("philo %i is attempting to sleep and think\n", philo->id_nb);
+	if (should_routine_stop(philo->monitor))
+		return (SIM_STOP);
+	philo_print(philo, MSG_SLEEPING);
+	ft_usleep(philo->monitor->mtime_to_sleep);
+	if (should_routine_stop(philo->monitor))
+		return (SIM_STOP);
+	philo_print(philo, MSG_THINKING);
+	return (SIM_CONTINUE);
+}
+
+static int	philo_eat(t_philo *philo)
+{
+printf("philo %i is attempting to eat\n", philo->id_nb);
+	if (should_routine_stop(philo->monitor))
+		return (SIM_STOP);
+	pthread_mutex_lock(&philo->l_fork);
+	philo_print(philo, MSG_TAKE_FORK);
+	pthread_mutex_lock(&philo->r_fork);
+	philo_print(philo, MSG_TAKE_FORK);
+	pthread_mutex_lock(&philo->death_time_lock);
+	philo->will_die_utime =
+		ft_get_utime() + philo->monitor->mtime_to_die * 1000;
+	pthread_mutex_unlock(&philo->death_time_lock);
+	philo_print(philo, MSG_EATING);
+	ft_usleep(philo->monitor->mtime_to_eat);
+	pthread_mutex_unlock(&philo->l_fork);
+	pthread_mutex_unlock(&philo->r_fork);
+	++philo->meals_eaten_nb;
+	if (philo->monitor->meal_target_nb != DFL_MEALS
+		&& philo->meals_eaten_nb == philo->monitor->meal_target_nb)
+		update_done_philos(philo->monitor);
+	if (should_routine_stop(philo->monitor))
+		return (SIM_STOP);
+	return (SIM_CONTINUE);
 }
 
 /*
@@ -37,15 +69,24 @@ to avoid conflicts.
 void	*philo_routine(void *void_philo)
 {
 	t_philo	*philo;
+	int		should_continue;
 
 	philo = (t_philo *) void_philo;
 	if (philo->monitor->meal_target_nb == 0)
 		return (NULL);
-	if (philo->monitor->philo_nb <= 1)
+	if (philo->monitor->philo_nb == 1)
 		return (lone_philo_case(philo));
 	wait_for_start_time(philo->monitor->start_utime);
+	should_continue = SIM_CONTINUE;
 	if (philo->id_nb % 2)
-		ft_usleep(10);
-	//todo
+		ft_usleep(philo->monitor->mtime_to_eat >> 2);
+	while (1)
+	{
+		if (philo_eat(philo) == SIM_STOP)
+			break;
+		if (philo_sleep_think(philo) == SIM_STOP)
+			break; 
+	}
+printf("philo %i is done\n", philo->id_nb);
 	return (NULL);
 }

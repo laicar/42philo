@@ -6,7 +6,7 @@
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 18:02:06 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/06/04 13:12:33 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/06 14:47:52 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,8 @@ void	ft_usleep(size_t useconds)
 //todo remove printf later
 void	wait_for_start_time(size_t start_utime)
 {
-	size_t	remaining;
-
-	remaining = ft_get_utime() - start_utime;
-	if (remaining > 0)
-		ft_usleep(remaining);
+	if (ft_get_utime() < start_utime)
+		ft_usleep(start_utime - ft_get_utime());
 	else
 		printf("Simulation started early!\n");
 }
