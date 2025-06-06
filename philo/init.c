@@ -6,12 +6,13 @@
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:40:44 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/06/06 14:51:48 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/06 15:18:03 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
+//see if forks should be pointers
 static void	init_philo(t_monitor *monitor, int nb_philo)
 {
 	int	i;

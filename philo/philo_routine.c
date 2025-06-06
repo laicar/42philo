@@ -6,7 +6,7 @@
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:32:59 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/06/06 15:03:37 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/06 15:14:13 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,6 @@ void	*philo_routine(void *void_philo)
 		if (philo_sleep_think(philo) == SIM_STOP)
 			break; 
 	}
-printf("philo %i is done\n", philo->id_nb);
+printf("philo %i is done with the routine\n", philo->id_nb);
 	return (NULL);
 }
