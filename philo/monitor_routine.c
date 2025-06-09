@@ -26,10 +26,14 @@ int	should_routine_stop(t_monitor *monitor)
 
 void	found_dead_philo(t_monitor *monitor, t_philo *dead_philo)
 {
-	philo_print(dead_philo, MSG_DYING);
+	pthread_mutex_lock(&monitor->write_lock);
+	printf("%lu %d %s\n",
+		mtime_diff(monitor->start_utime, ft_get_utime()),
+		dead_philo->id_nb, MSG_DYING);
 	pthread_mutex_lock(&monitor->flags_lock);
 	monitor->dead_philo_flag = B_TRUE;
 	pthread_mutex_unlock(&monitor->flags_lock);
+	pthread_mutex_unlock(&monitor->write_lock);
 }
 
 void	update_done_philos(t_monitor *monitor)
@@ -47,35 +51,37 @@ void	update_done_philos(t_monitor *monitor)
 		pthread_mutex_unlock(&monitor->philo_done_lock);
 }
 
-void	*monitor_routine(void *void_monitor)
+static void	monitor_loop(t_monitor *monitor)
 {
-	t_monitor	*monitor;
-	int			continue_sim;
-	int			i;
-	size_t		philo_death_utime;
-
-	monitor = (t_monitor *) void_monitor;
-	continue_sim = SIM_CONTINUE;
-	i = 0;
-	if (monitor->meal_target_nb == 0)
-		return (NULL);
-	wait_for_start_time(monitor->start_utime);
-	while (continue_sim == SIM_CONTINUE)
+	while (1)
 	{
-		continue_sim = should_routine_stop(monitor);
-		if (continue_sim == SIM_STOP)
-			break;
+		if (should_routine_stop(monitor) == SIM_STOP)
+			break ;
 		pthread_mutex_lock(&monitor->philos[i].death_time_lock);
 		philo_death_utime = monitor->philos[i].will_die_utime;
 		pthread_mutex_unlock(&monitor->philos[i].death_time_lock);
 		if (philo_death_utime < ft_get_utime())
 		{
 			found_dead_philo(monitor, &monitor->philos[i]);
-			continue_sim = SIM_STOP;
+			break ;
 		}
 		++i;
 		if (i == monitor->philo_nb)
 			i = 0;
 	}
+}
+
+void	*monitor_routine(void *void_monitor)
+{
+	t_monitor	*monitor;
+	int			i;
+	size_t		philo_death_utime;
+
+	monitor = (t_monitor *) void_monitor;
+	if (monitor->meal_target_nb == 0)
+		return (NULL);
+	i = 0;
+	wait_for_start_time(monitor->start_utime);
+	monitor_loop(monitor);
 	return (NULL);
 }

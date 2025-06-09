@@ -83,9 +83,9 @@ void	*philo_routine(void *void_philo)
 	while (1)
 	{
 		if (philo_eat(philo) == SIM_STOP)
-			break;
+			break ;
 		if (philo_sleep_think(philo) == SIM_STOP)
-			break; 
+			break ; 
 	}
 	return (NULL);
 }
