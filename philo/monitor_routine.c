@@ -36,13 +36,15 @@ void	update_done_philos(t_monitor *monitor)
 {
 	pthread_mutex_lock(&monitor->philo_done_lock);
 	++monitor->philo_done_nb;
-	pthread_mutex_unlock(&monitor->philo_done_lock);
 	if (monitor->philo_done_nb == monitor->philo_nb)
 	{
+		pthread_mutex_unlock(&monitor->philo_done_lock);
 		pthread_mutex_lock(&monitor->flags_lock);
 		monitor->all_meals_flag = B_TRUE;
 		pthread_mutex_unlock(&monitor->flags_lock);
 	}
+	else
+		pthread_mutex_unlock(&monitor->philo_done_lock);
 }
 
 void	*monitor_routine(void *void_monitor)

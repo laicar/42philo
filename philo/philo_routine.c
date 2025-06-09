@@ -76,7 +76,10 @@ void	*philo_routine(void *void_philo)
 		return (lone_philo_case(philo));
 	wait_for_start_time(philo->monitor->start_utime);
 	if (philo->id_nb % 2)
+	{
+		philo_print(philo, MSG_THINKING);
 		ft_usleep(philo->monitor->utime_to_eat >> 1);
+	}
 	while (1)
 	{
 		if (philo_eat(philo) == SIM_STOP)
