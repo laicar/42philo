@@ -56,7 +56,6 @@ void	*monitor_routine(void *void_monitor)
 	continue_sim = SIM_CONTINUE;
 	i = 0;
 	wait_for_start_time(monitor->start_utime);
-	// ft_usleep(monitor->utime_to_die >> 1);
 	while (continue_sim == SIM_CONTINUE)
 	{
 		continue_sim = should_routine_stop(monitor);

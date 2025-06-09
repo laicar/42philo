@@ -21,7 +21,6 @@ int	philo_print(t_philo *philo, char *action_msg)
 	pthread_mutex_lock(&philo->monitor->flags_lock);
 	if (philo->monitor->all_meals_flag == B_TRUE || philo->monitor->dead_philo_flag == B_TRUE)
 	{
-printf("Found flag telling to stop\n");
 		pthread_mutex_unlock(&philo->monitor->flags_lock);
 		return (B_FALSE);
 	}

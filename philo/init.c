@@ -12,7 +12,6 @@
 
 #include "philosophers.h"
 
-//see if forks should be pointers
 static void	init_philo(t_monitor *monitor, int nb_philo)
 {
 	int	i;

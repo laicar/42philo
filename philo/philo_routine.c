@@ -25,7 +25,6 @@ static void	*lone_philo_case(t_philo *philo)
 
 static int	philo_sleep_think(t_philo *philo)
 {
-printf("philo %i is attempting to sleep and think\n", philo->id_nb);
 	if (should_routine_stop(philo->monitor) == SIM_STOP)
 		return (SIM_STOP);
 	philo_print(philo, MSG_SLEEPING);
@@ -38,10 +37,8 @@ printf("philo %i is attempting to sleep and think\n", philo->id_nb);
 
 static int	philo_eat(t_philo *philo)
 {
-printf("philo %i is attempting to eat\n", philo->id_nb);
 	if (should_routine_stop(philo->monitor) == SIM_STOP)
 		return (SIM_STOP);
-printf("philo %i found it could take a fork\n", philo->id_nb);
 	pthread_mutex_lock(&philo->l_fork);
 	philo_print(philo, MSG_TAKE_FORK);
 	pthread_mutex_lock(philo->r_fork);
@@ -86,6 +83,5 @@ void	*philo_routine(void *void_philo)
 		if (philo_sleep_think(philo) == SIM_STOP)
 			break; 
 	}
-printf("philo %i is done with the routine\n", philo->id_nb);
 	return (NULL);
 }

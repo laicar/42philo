@@ -12,14 +12,6 @@
 
 #include "philosophers.h"
 
-size_t	ft_get_mtime(void)
-{
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * 1000UL + tv.tv_usec / 1000UL);
-}
-
 size_t	ft_get_utime(void)
 {
 	struct timeval	tv;
@@ -58,11 +50,8 @@ void	ft_usleep(size_t useconds)
 	}
 }
 
-//todo remove printf later
 void	wait_for_start_time(size_t start_utime)
 {
 	if (ft_get_utime() < start_utime)
 		ft_usleep(start_utime - ft_get_utime());
-	else
-		printf("Simulation started early!\n");
 }
