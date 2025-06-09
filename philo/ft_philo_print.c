@@ -24,11 +24,11 @@ int	philo_print(t_philo *philo, char *action_msg)
 		pthread_mutex_unlock(&philo->monitor->flags_lock);
 		return (B_FALSE);
 	}
+	pthread_mutex_unlock(&philo->monitor->flags_lock);
 	pthread_mutex_lock(&philo->monitor->write_lock);
 	printf("%lu %d %s\n",
 		mtime_diff(philo->monitor->start_utime, ft_get_utime()),
 		philo->id_nb, action_msg);
 	pthread_mutex_unlock(&philo->monitor->write_lock);
-	pthread_mutex_unlock(&philo->monitor->flags_lock);
 	return (B_TRUE);
 }

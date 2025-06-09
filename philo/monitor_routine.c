@@ -26,13 +26,13 @@ int	should_routine_stop(t_monitor *monitor)
 
 void	found_dead_philo(t_monitor *monitor, t_philo *dead_philo)
 {
+	pthread_mutex_lock(&monitor->flags_lock);
+	monitor->dead_philo_flag = B_TRUE;
+	pthread_mutex_unlock(&monitor->flags_lock);
 	pthread_mutex_lock(&monitor->write_lock);
 	printf("%lu %d %s\n",
 		mtime_diff(monitor->start_utime, ft_get_utime()),
 		dead_philo->id_nb, MSG_DYING);
-	pthread_mutex_lock(&monitor->flags_lock);
-	monitor->dead_philo_flag = B_TRUE;
-	pthread_mutex_unlock(&monitor->flags_lock);
 	pthread_mutex_unlock(&monitor->write_lock);
 }
 
