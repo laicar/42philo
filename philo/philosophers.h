@@ -48,8 +48,8 @@ typedef struct s_philosopher
 	int					id_nb;
 	int					meals_eaten_nb;
 	size_t				will_die_utime;
-	pthread_mutex_t		r_fork;
 	pthread_mutex_t 	l_fork;
+	pthread_mutex_t		*r_fork;
 	pthread_mutex_t 	death_time_lock;
 }	t_philo;
 

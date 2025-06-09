@@ -29,11 +29,11 @@ static void	init_philo(t_monitor *monitor, int nb_philo)
 		pthread_mutex_init(&monitor->philos[i].death_time_lock, NULL);
 		++i;
 	}
-	monitor->philos[0].r_fork = monitor->philos[nb_philo - 1].l_fork;
+	monitor->philos[0].r_fork = &monitor->philos[nb_philo - 1].l_fork;
 	i = 1;
 	while (i < nb_philo)
 	{
-		monitor->philos[i].r_fork = monitor->philos[i - 1].l_fork;
+		monitor->philos[i].r_fork = &monitor->philos[i - 1].l_fork;
 		++i;
 	}
 }

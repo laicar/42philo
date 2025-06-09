@@ -43,7 +43,7 @@ printf("philo %i is attempting to eat\n", philo->id_nb);
 		return (SIM_STOP);
 	pthread_mutex_lock(&philo->l_fork);
 	philo_print(philo, MSG_TAKE_FORK);
-	pthread_mutex_lock(&philo->r_fork);
+	pthread_mutex_lock(philo->r_fork);
 	philo_print(philo, MSG_TAKE_FORK);
 	pthread_mutex_lock(&philo->death_time_lock);
 	philo->will_die_utime =
@@ -52,7 +52,7 @@ printf("philo %i is attempting to eat\n", philo->id_nb);
 	philo_print(philo, MSG_EATING);
 	ft_usleep(philo->monitor->mtime_to_eat);
 	pthread_mutex_unlock(&philo->l_fork);
-	pthread_mutex_unlock(&philo->r_fork);
+	pthread_mutex_unlock(philo->r_fork);
 	++philo->meals_eaten_nb;
 	if (philo->monitor->meal_target_nb != DFL_MEALS
 		&& philo->meals_eaten_nb == philo->monitor->meal_target_nb)
@@ -69,7 +69,6 @@ to avoid conflicts.
 void	*philo_routine(void *void_philo)
 {
 	t_philo	*philo;
-	int		should_continue;
 
 	philo = (t_philo *) void_philo;
 	if (philo->monitor->meal_target_nb == 0)
@@ -77,7 +76,6 @@ void	*philo_routine(void *void_philo)
 	if (philo->monitor->philo_nb == 1)
 		return (lone_philo_case(philo));
 	wait_for_start_time(philo->monitor->start_utime);
-	should_continue = SIM_CONTINUE;
 	if (philo->id_nb % 2)
 		ft_usleep(philo->monitor->mtime_to_eat >> 2);
 	while (1)
