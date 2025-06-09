@@ -15,7 +15,7 @@
 int	should_routine_stop(t_monitor *monitor)
 {
 	pthread_mutex_lock(&monitor->flags_lock);
-	if (monitor->dead_philo_flag || monitor->all_meals_flag)
+	if (monitor->dead_philo_flag == B_TRUE || monitor->all_meals_flag == B_TRUE)
 	{
 		pthread_mutex_unlock(&monitor->flags_lock);
 		return (SIM_STOP);
@@ -36,13 +36,13 @@ void	update_done_philos(t_monitor *monitor)
 {
 	pthread_mutex_lock(&monitor->philo_done_lock);
 	++monitor->philo_done_nb;
-	if (monitor->philo_done_nb >= monitor->philo_nb)
+	pthread_mutex_unlock(&monitor->philo_done_lock);
+	if (monitor->philo_done_nb == monitor->philo_nb)
 	{
 		pthread_mutex_lock(&monitor->flags_lock);
 		monitor->all_meals_flag = B_TRUE;
 		pthread_mutex_unlock(&monitor->flags_lock);
 	}
-	pthread_mutex_unlock(&monitor->philo_done_lock);
 }
 
 void	*monitor_routine(void *void_monitor)
@@ -54,11 +54,14 @@ void	*monitor_routine(void *void_monitor)
 
 	monitor = (t_monitor *) void_monitor;
 	continue_sim = SIM_CONTINUE;
-	wait_for_start_time(monitor->start_utime);
 	i = 0;
+	wait_for_start_time(monitor->start_utime);
+	// ft_usleep(monitor->utime_to_die >> 1);
 	while (continue_sim == SIM_CONTINUE)
 	{
 		continue_sim = should_routine_stop(monitor);
+		if (continue_sim == SIM_STOP)
+			break;
 		pthread_mutex_lock(&monitor->philos[i].death_time_lock);
 		philo_death_utime = monitor->philos[i].will_die_utime;
 		pthread_mutex_unlock(&monitor->philos[i].death_time_lock);

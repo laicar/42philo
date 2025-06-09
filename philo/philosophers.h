@@ -58,9 +58,9 @@ typedef struct s_monitor
 	t_philo			philos[P_MAX];
 	int				philo_nb;
 	size_t			start_utime;
-	int				mtime_to_die;
-	int				mtime_to_eat;
-	int				mtime_to_sleep;
+	int				utime_to_die;
+	int				utime_to_eat;
+	int				utime_to_sleep;
 	int				meal_target_nb;
 	int				dead_philo_flag;
 	int				all_meals_flag;

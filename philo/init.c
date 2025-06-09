@@ -22,7 +22,7 @@ static void	init_philo(t_monitor *monitor, int nb_philo)
 	{
 		monitor->philos[i].monitor = monitor;
 		monitor->philos[i].will_die_utime =
-			monitor->start_utime + monitor->mtime_to_die * 1000;
+			monitor->start_utime + monitor->utime_to_die * 1000;
 		monitor->philos[i].id_nb = i + 1;
 		monitor->philos[i].meals_eaten_nb = 0;
 		pthread_mutex_init(&monitor->philos[i].l_fork, NULL);
@@ -41,15 +41,15 @@ static void	init_philo(t_monitor *monitor, int nb_philo)
 static int	init_monitor_arg(int argc, char **argv, t_monitor *monitor)
 {
 	monitor->philo_nb = ft_parse_arg(argv[1]);
-	monitor->mtime_to_die = ft_parse_arg(argv[2]);
-	monitor->mtime_to_eat = ft_parse_arg(argv[3]);
-	monitor->mtime_to_sleep = ft_parse_arg(argv[4]);
+	monitor->utime_to_die = ft_parse_arg(argv[2]) * 1000;
+	monitor->utime_to_eat = ft_parse_arg(argv[3]) * 1000;
+	monitor->utime_to_sleep = ft_parse_arg(argv[4]) * 1000;
 	if (argc == 6)
 		monitor->meal_target_nb = ft_parse_arg(argv[5]);
 	else
 		monitor->meal_target_nb = DFL_MEALS;
-	if (monitor->meal_target_nb == -1 || monitor->mtime_to_die == -1
-		|| monitor->mtime_to_eat == -1 || monitor->mtime_to_sleep == -1
+	if (monitor->meal_target_nb == -1 || monitor->utime_to_die == -1
+		|| monitor->utime_to_eat == -1 || monitor->utime_to_sleep == -1
 		|| monitor->philo_nb <= 0 || monitor->philo_nb > P_MAX)
 	{
 		free(monitor);
