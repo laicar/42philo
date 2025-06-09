@@ -53,6 +53,10 @@ void	update_done_philos(t_monitor *monitor)
 
 static void	monitor_loop(t_monitor *monitor)
 {
+	int			i;
+	size_t		philo_death_utime;
+
+	i = 0;
 	while (1)
 	{
 		if (should_routine_stop(monitor) == SIM_STOP)
@@ -74,13 +78,10 @@ static void	monitor_loop(t_monitor *monitor)
 void	*monitor_routine(void *void_monitor)
 {
 	t_monitor	*monitor;
-	int			i;
-	size_t		philo_death_utime;
 
 	monitor = (t_monitor *) void_monitor;
 	if (monitor->meal_target_nb == 0)
 		return (NULL);
-	i = 0;
 	wait_for_start_time(monitor->start_utime);
 	monitor_loop(monitor);
 	return (NULL);
