@@ -55,6 +55,8 @@ void	*monitor_routine(void *void_monitor)
 	monitor = (t_monitor *) void_monitor;
 	continue_sim = SIM_CONTINUE;
 	i = 0;
+	if (monitor->meal_target_nb == 0)
+		return (NULL);
 	wait_for_start_time(monitor->start_utime);
 	while (continue_sim == SIM_CONTINUE)
 	{

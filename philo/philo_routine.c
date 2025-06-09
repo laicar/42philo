@@ -14,6 +14,7 @@
 
 static void	*lone_philo_case(t_philo *philo)
 {
+	wait_for_start_time(philo->monitor->start_utime);
 	pthread_mutex_lock(&philo->l_fork);
 	philo_print(philo, MSG_TAKE_FORK);
 	ft_usleep(philo->monitor->utime_to_die);
