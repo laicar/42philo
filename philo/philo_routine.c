@@ -6,7 +6,7 @@
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:32:59 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/06/06 15:14:13 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/12 16:34:12 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,10 @@
 static void	*lone_philo_case(t_philo *philo)
 {
 	wait_for_start_time(philo->monitor->start_utime);
-	pthread_mutex_lock(&philo->l_fork);
+	pthread_mutex_lock(&philo->own_fork);
 	philo_print(philo, MSG_TAKE_FORK);
 	ft_usleep(philo->monitor->utime_to_die);
-	pthread_mutex_unlock(&philo->l_fork);
-	found_dead_philo(philo->monitor, philo);
-	should_routine_stop(philo->monitor);
+	pthread_mutex_unlock(&philo->own_fork);
 	return (NULL);
 }
 
@@ -38,26 +36,26 @@ static int	philo_sleep_think(t_philo *philo)
 
 static int	philo_eat(t_philo *philo)
 {
+	size_t	ttd;
+
 	if (should_routine_stop(philo->monitor) == SIM_STOP)
 		return (SIM_STOP);
-	pthread_mutex_lock(&philo->l_fork);
+	ttd = 5 + philo->monitor->utime_to_die / 1000;
+	pthread_mutex_lock(philo->fork1);
 	philo_print(philo, MSG_TAKE_FORK);
-	pthread_mutex_lock(philo->r_fork);
+	pthread_mutex_lock(philo->fork2);
 	philo_print(philo, MSG_TAKE_FORK);
 	pthread_mutex_lock(&philo->death_time_lock);
-	philo->will_die_utime =
-		ft_get_utime() + philo->monitor->utime_to_die;
+	philo->will_die_mtime = ft_get_mtime() + ttd;
 	pthread_mutex_unlock(&philo->death_time_lock);
 	philo_print(philo, MSG_EATING);
 	ft_usleep(philo->monitor->utime_to_eat);
-	pthread_mutex_unlock(&philo->l_fork);
-	pthread_mutex_unlock(philo->r_fork);
+	pthread_mutex_unlock(philo->fork2);
+	pthread_mutex_unlock(philo->fork1);
 	++philo->meals_eaten_nb;
 	if (philo->monitor->meal_target_nb != DFL_MEALS
 		&& philo->meals_eaten_nb == philo->monitor->meal_target_nb)
 		update_done_philos(philo->monitor);
-	if (should_routine_stop(philo->monitor) == SIM_STOP)
-		return (SIM_STOP);
 	return (SIM_CONTINUE);
 }
 
@@ -85,7 +83,7 @@ void	*philo_routine(void *void_philo)
 		if (philo_eat(philo) == SIM_STOP)
 			break ;
 		if (philo_sleep_think(philo) == SIM_STOP)
-			break ; 
+			break ;
 	}
 	return (NULL);
 }

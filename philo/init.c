@@ -6,43 +6,61 @@
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 12:40:44 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/06/06 15:18:03 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/12 16:22:02 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static void	init_philo(t_monitor *monitor, int nb_philo)
+static void	init_forks(t_monitor *monitor, int nb_philo)
 {
 	int	i;
 
-	i = 0;
-	while (i < nb_philo)
-	{
-		monitor->philos[i].monitor = monitor;
-		monitor->philos[i].will_die_utime =
-			monitor->start_utime + monitor->utime_to_die * 1000;
-		monitor->philos[i].id_nb = i + 1;
-		monitor->philos[i].meals_eaten_nb = 0;
-		pthread_mutex_init(&monitor->philos[i].l_fork, NULL);
-		pthread_mutex_init(&monitor->philos[i].death_time_lock, NULL);
-		++i;
-	}
-	monitor->philos[0].r_fork = &monitor->philos[nb_philo - 1].l_fork;
+	monitor->philos[0].fork1 = &(monitor->philos[0].own_fork);
+	monitor->philos[0].fork2 = &(monitor->philos[nb_philo - 1].own_fork);
 	i = 1;
 	while (i < nb_philo)
 	{
-		monitor->philos[i].r_fork = &monitor->philos[i - 1].l_fork;
+		if (i % 2)
+		{
+			monitor->philos[i].fork1 = &(monitor->philos[i - 1].own_fork);
+			monitor->philos[i].fork2 = &(monitor->philos[i].own_fork);
+		}
+		else
+		{
+			monitor->philos[i].fork2 = &(monitor->philos[i - 1].own_fork);
+			monitor->philos[i].fork1 = &(monitor->philos[i].own_fork);
+		}
 		++i;
 	}
+}
+
+static void	init_philo(t_monitor *monitor, int nb_philo)
+{
+	int		i;
+	size_t	ttd;
+
+	i = 0;
+	ttd = (monitor->start_utime + monitor->utime_to_die) / 1000;
+	while (i < nb_philo)
+	{
+		monitor->philos[i].monitor = monitor;
+		monitor->philos[i].will_die_mtime = ttd;
+		monitor->philos[i].id_nb = i + 1;
+		monitor->philos[i].meals_eaten_nb = 0;
+		pthread_mutex_init(&monitor->philos[i].own_fork, NULL);
+		pthread_mutex_init(&monitor->philos[i].death_time_lock, NULL);
+		++i;
+	}
+	init_forks(monitor, nb_philo);
 }
 
 static int	init_monitor_arg(int argc, char **argv, t_monitor *monitor)
 {
 	monitor->philo_nb = ft_parse_arg(argv[1]);
-	monitor->utime_to_die = ft_parse_arg(argv[2]) * 1000;
-	monitor->utime_to_eat = ft_parse_arg(argv[3]) * 1000;
-	monitor->utime_to_sleep = ft_parse_arg(argv[4]) * 1000;
+	monitor->utime_to_die = ft_parse_arg(argv[2]);
+	monitor->utime_to_eat = ft_parse_arg(argv[3]);
+	monitor->utime_to_sleep = ft_parse_arg(argv[4]);
 	if (argc == 6)
 		monitor->meal_target_nb = ft_parse_arg(argv[5]);
 	else
@@ -54,10 +72,13 @@ static int	init_monitor_arg(int argc, char **argv, t_monitor *monitor)
 		free(monitor);
 		printf("Argument error.\n"
 			"All arguments must be positive integers,"
-			" there must be at least 1 philo, and philo max number is %i.\n"
-			, P_MAX);
+			" there must be at least 1 philo, and philo max number is %i.\n",
+			P_MAX);
 		exit(EXIT_FAILURE);
 	}
+	monitor->utime_to_die *= 1000;
+	monitor->utime_to_eat *= 1000;
+	monitor->utime_to_sleep *= 1000;
 	return (0);
 }
 
@@ -74,7 +95,7 @@ static t_monitor	*init_monitor(int argc, char **argv)
 	pthread_mutex_init(&monitor->flags_lock, NULL);
 	pthread_mutex_init(&monitor->philo_done_lock, NULL);
 	pthread_mutex_init(&monitor->write_lock, NULL);
-	monitor->start_utime = ft_get_utime() + (monitor->philo_nb * 30000);
+	monitor->start_utime = ft_get_utime() + (monitor->philo_nb * 40000);
 	return (monitor);
 }
 

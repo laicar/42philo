@@ -6,7 +6,7 @@
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 11:15:46 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/06/06 14:57:17 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/12 15:45:27 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,7 @@ void	found_dead_philo(t_monitor *monitor, t_philo *dead_philo)
 	monitor->dead_philo_flag = B_TRUE;
 	pthread_mutex_unlock(&monitor->flags_lock);
 	pthread_mutex_lock(&monitor->write_lock);
-	printf("%lu %d %s\n",
-		mtime_diff(monitor->start_utime, ft_get_utime()),
+	printf("%lu %d %s\n", mtime_diff(monitor->start_utime, ft_get_utime()),
 		dead_philo->id_nb, MSG_DYING);
 	pthread_mutex_unlock(&monitor->write_lock);
 }
@@ -54,17 +53,19 @@ void	update_done_philos(t_monitor *monitor)
 static void	monitor_loop(t_monitor *monitor)
 {
 	int			i;
-	size_t		philo_death_utime;
+	size_t		philo_death_mtime;
 
 	i = 0;
+	if (monitor->philo_nb == 1)
+		ft_usleep(monitor->utime_to_die);
 	while (1)
 	{
 		if (should_routine_stop(monitor) == SIM_STOP)
 			break ;
 		pthread_mutex_lock(&monitor->philos[i].death_time_lock);
-		philo_death_utime = monitor->philos[i].will_die_utime;
+		philo_death_mtime = monitor->philos[i].will_die_mtime;
 		pthread_mutex_unlock(&monitor->philos[i].death_time_lock);
-		if (philo_death_utime < ft_get_utime())
+		if (philo_death_mtime < ft_get_mtime())
 		{
 			found_dead_philo(monitor, &monitor->philos[i]);
 			break ;

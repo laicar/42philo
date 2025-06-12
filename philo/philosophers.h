@@ -6,7 +6,7 @@
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 17:42:17 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/06/06 13:17:37 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/12 16:20:17 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,15 @@
 // The official output specified
 
 # define MSG_TAKE_FORK "has taken a fork"
+// # define MSG_TAKE_FORK_1 "has taken fork 1"
+// # define MSG_TAKE_FORK_2 "has taken fork 2"
 # define MSG_THINKING "is thinking"
 # define MSG_SLEEPING "is sleeping"
 # define MSG_EATING "is eating"
 # define MSG_DYING "died"
 
 // Booleans
+
 # define B_TRUE 1
 # define B_FALSE 0
 
@@ -39,7 +42,7 @@
 // The default value for no meal number target
 # define DFL_MEALS -42
 
-struct s_monitor;
+struct	s_monitor;
 
 typedef struct s_philosopher
 {
@@ -47,10 +50,11 @@ typedef struct s_philosopher
 	pthread_t			thread;
 	int					id_nb;
 	int					meals_eaten_nb;
-	size_t				will_die_utime;
-	pthread_mutex_t 	l_fork;
-	pthread_mutex_t		*r_fork;
-	pthread_mutex_t 	death_time_lock;
+	size_t				will_die_mtime;
+	pthread_mutex_t		own_fork;
+	pthread_mutex_t		*fork1;
+	pthread_mutex_t		*fork2;
+	pthread_mutex_t		death_time_lock;
 }	t_philo;
 
 typedef struct s_monitor
@@ -69,8 +73,9 @@ typedef struct s_monitor
 	pthread_mutex_t	flags_lock;
 	pthread_mutex_t	philo_done_lock;
 	pthread_mutex_t	write_lock;
-} t_monitor;
+}	t_monitor;
 
+size_t		ft_get_mtime(void);
 size_t		ft_get_utime(void);
 size_t		mtime_diff(size_t start_utime, size_t end_utime);
 void		ft_usleep(size_t useconds);

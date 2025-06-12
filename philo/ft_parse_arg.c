@@ -6,7 +6,7 @@
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 16:41:18 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/06/04 17:58:20 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/12 13:57:47 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,10 @@ static int	validate_len(char *str, int *i)
 	if (len >= 12
 		|| (len == 11
 			&& ((str[*i] != '-' && str[*i] != '+')
-				|| (str[*i] == '+' && ft_strncmp(str + *i, "+2147483647", 11) > 0)
-				|| (str[*i] == '-' && ft_strncmp(str + *i, "-2147483648", 11) > 0)))
+				|| (str[*i] == '+'
+					&& ft_strncmp(str + *i, "+2147483647", 11) > 0)
+				|| (str[*i] == '-'
+					&& ft_strncmp(str + *i, "-2147483648", 11) > 0)))
 		|| (len == 10 && ft_strncmp(str + *i, "2147483647", 10) > 0))
 		return (-1);
 	return (len);

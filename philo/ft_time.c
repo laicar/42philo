@@ -6,11 +6,19 @@
 /*   By: clai-ton <clai-ton@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 18:02:06 by clai-ton          #+#    #+#             */
-/*   Updated: 2025/06/06 14:47:52 by clai-ton         ###   ########.fr       */
+/*   Updated: 2025/06/12 15:29:03 by clai-ton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+size_t	ft_get_mtime(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000UL + tv.tv_usec / 1000UL);
+}
 
 size_t	ft_get_utime(void)
 {
